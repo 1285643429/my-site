@@ -31,32 +31,47 @@ header{padding:14px;font-size:18px;font-weight:700}
 </div>
 
 <script>
-const V = [
+var V = [
   {id:"test001",title:"第一个视频",thumb:"https://picsum.photos/640/360?1",embed:"https://streamtape.com/e/test001/"},
   {id:"test002",title:"第二个视频",thumb:"https://picsum.photos/640/360?2",embed:"https://streamtape.com/e/test002/"}
 ];
 
-const g=document.getElementById('g'),p=document.getElementById('p'),f=document.getElementById('f');
+var g = document.getElementById('g');
+var p = document.getElementById('p');
+var f = document.getElementById('f');
 
-g.innerHTML=V.map(v=>`<div class="card" data-i="${v.id}">
-< img src="${v.thumb}" loading="lazy" alt="">
-<div class="t">${v.title}</div></div>`).join('');
+for (var i = 0; i < V.length; i++) {
+  (function(v) {
+    var card = document.createElement('div');
+    card.className = 'card';
 
-g.onclick=e=>{
-  const c=e.target.closest('.card');
-  if(!c)return;
-  const v=V.find(x=>x.id===c.dataset.i);
-  f.src=v.embed;
-  p.classList.remove('hide');
-};
+    var img = document.createElement('img');
+    img.src = v.thumb;
+    img.loading = 'lazy';
+    img.alt = '';
+    card.appendChild(img);
 
-document.getElementById('x').onclick=()=>{
-  f.src='';
+    var t = document.createElement('div');
+    t.className = 't';
+    t.textContent = v.title;
+    card.appendChild(t);
+
+    card.onclick = function() {
+      f.src = v.embed;
+      p.classList.remove('hide');
+    };
+
+    g.appendChild(card);
+  })(V[i]);
+}
+
+document.getElementById('x').onclick = function() {
+  f.src = '';
   p.classList.add('hide');
 };
 
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(function() {});
 }
 </script>
 </body>
