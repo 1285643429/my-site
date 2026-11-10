@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>我的站</title>
+<meta name="theme-color" content="#0d0d0d">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d0d0d;color:#e8e8e8;font:16px/1.5 system-ui,sans-serif}
+header{padding:14px;font-size:18px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 14px 40px}
+.card{background:#1a1a1a;border-radius:10px;overflow:hidden}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#222}
+.card .t{padding:8px 10px;font-size:13px}
+.player{position:fixed;inset:0;background:#000;z-index:9;display:flex;flex-direction:column}
+.player.hide{display:none}
+.player button{background:none;border:0;color:#fff;font-size:15px;padding:14px;text-align:left}
+.player iframe{flex:1;width:100%;border:0}
+</style>
+</head>
+<body>
+<header>我的站</header>
+<div class="grid" id="g"></div>
+
+<div class="player hide" id="p">
+  <button id="x">✕ 关闭</button>
+  <iframe id="f" allowfullscreen allow="autoplay;fullscreen"></iframe>
+</div>
+
+<script>
+const V = [
+  {id:"test001",title:"第一个视频",thumb:"https://picsum.photos/640/360?1",embed:"https://streamtape.com/e/test001/"},
+  {id:"test002",title:"第二个视频",thumb:"https://picsum.photos/640/360?2",embed:"https://streamtape.com/e/test002/"}
+];
+
+const g=document.getElementById('g'),p=document.getElementById('p'),f=document.getElementById('f');
+
+g.innerHTML=V.map(v=>`<div class="card" data-i="${v.id}">
+< img src="${v.thumb}" loading="lazy" alt="">
+<div class="t">${v.title}</div></div>`).join('');
+
+g.onclick=e=>{
+  const c=e.target.closest('.card');
+  if(!c)return;
+  const v=V.find(x=>x.id===c.dataset.i);
+  f.src=v.embed;
+  p.classList.remove('hide');
+};
+
+document.getElementById('x').onclick=()=>{
+  f.src='';
+  p.classList.add('hide');
+};
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
